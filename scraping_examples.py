@@ -57,9 +57,15 @@ weather = pd.DataFrame({
     "period": periods,
     "short_desc": short_descs,
     "temp": temps,
-    "desc":descs
+    "desc": descs
 })
 
-temp_nums = weather["temp"].str.extract("(?Pd+)", expand=False)
+temp_nums = weather["temp"].str.extract("(?P<a>\d+)", expand=False)
+weather["temp_num"] = temp_nums.astype('int')
 
-weather["temp"].str.extract(r'([ab])(\d)')
+weather["temp_num"].mean()
+
+is_night = weather["temp"].str.contains("Low")
+weather["is_night"] = is_night
+
+weather[is_night]
