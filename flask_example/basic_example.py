@@ -1,10 +1,10 @@
-__author__ = 'jessica'
-from distutils.log import debug
-import json
 import requests
 import pandas as pd
+from distutils.log import debug
 from bs4 import BeautifulSoup
 from flask import Flask, render_template, request
+
+__author__ = 'jessica'
 
 app = Flask(__name__)
 
@@ -17,7 +17,7 @@ def forecast():
     lat = request.form['lat']
     long = request.form['long']
     source = f"https://forecast.weather.gov/MapClick.php?lat={lat}&lon={long}"
-    page = requests.get(f"https://forecast.weather.gov/MapClick.php?lat={lat}&lon={long}")
+    page = requests.get(source)
     soup = BeautifulSoup(page.content, 'html.parser')
     seven_day = soup.find(id="seven-day-forecast")
     periods = [pt.get_text() for pt in seven_day.select(".tombstone-container .period-name")]
@@ -32,18 +32,7 @@ def forecast():
         "Long description": descs
     })
 
-    return ('<h3> Your summarized forecast is: </h3> %s <br/> <a href="/">Back Home</a>'
-    % (weather.to_html(header="true", table_id="table")))
-
-@app.route('/test', methods=['POST'])
-def test():
-    output = request.get_json()
-    print(output) # This is the output that was stored in the JSON within the browser
-    print(type(output))
-    result = json.loads(output) #this converts the json output to a python dictionary
-    print(result) # Printing the new dictionary
-    print(type(result))#this shows the json converted as a python dictionary
-    return result
+    return(f'<h3> Your summarized forecast is: </h3> {weather.to_html(header="true", table_id="table")} <br/> <b> Source: </b> {source} <br/> <br/><a href="/">Back Home</a>')
 
 if __name__ == '__main__':
-    app.run(host = '0.0.0.0', port = 3021, debug = True)
+    app.run(host = '0.0.0.0', port = 3022, debug = True)
