@@ -6,19 +6,15 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
         integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
         crossorigin="" />
-
-
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
         integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
         crossorigin=""></script>
-
     <style>
         #map {
             width: 100%;
             height: 400px;
             align-content: center;
             position: center;
-
             cursor: crosshair;
         }
     </style>
@@ -42,45 +38,41 @@
         </p>
     </div>
 
-    <h3>
-        Do you need some help to select the coordinates?
-    </h3>
-    <p>
-        If so click in the desired city through the map below:
-    </p>
-    <div id='map'> </div>
-    <script>
-        var maxBounds = [
-            [24, -130], //Southwest
-            [49, -66]  //Northeast
-        ];
+    <div>
+        <h3> Do you need some help to select the coordinates? </h3>
+        <p> If so click in the desired city through the map below: </p>
+    </div>
 
-        var map = L.map('map', {
-            'center': [40, -102],
-            'zoom': 3,
-            'maxBounds': maxBounds
-        }).fitBounds(maxBounds);
+    <div id='map'>
+        <script>
+            var maxBounds = [[24, -130], [49, -66]];
 
-        L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=dI3ypZCa9LKjqjGf6Y7k',
-            {
-                attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
-            }).addTo(map);
+            var map = L.map('map', {
+                'center': [40, -102],
+                'zoom': 3,
+                'maxBounds': maxBounds
+            }).fitBounds(maxBounds);
 
-        map.on('click', function (e) {
-            var coord = e.latlng;
-            var lat = String(coord.lat.toFixed(3));
-            var lng = String(coord.lng.toFixed(3));
-            console.log("You clicked the map at latitude: " + lat + " and longitude: " + lng);
-            var popup = L.popup()
-                .setLatLng(e.latlng)
-                .setContent("Latitude: " + lat + "\n Longitude: " + lng)
-                .openOn(map);
-        });
+            L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=dI3ypZCa9LKjqjGf6Y7k',
+                {
+                    attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+                }).addTo(map);
 
-        map.setMaxBounds(maxBounds);
-        map.fitBounds(maxBounds);
-    </script>
+            map.on('click', function (e) {
+                var coord = e.latlng;
+                var lat = String(coord.lat.toFixed(3));
+                var lng = String(coord.lng.toFixed(3));
+                console.log("You clicked the map at latitude: " + lat + " and longitude: " + lng);
+                var popup = L.popup()
+                    .setLatLng(e.latlng)
+                    .setContent("Latitude: " + lat + "\n Longitude: " + lng)
+                    .openOn(map);
+            });
+
+            map.setMaxBounds(maxBounds);
+            map.fitBounds(maxBounds);
+        </script>
+    </div>
 </body>
-</div>
 
 </html>
