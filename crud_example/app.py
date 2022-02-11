@@ -1,4 +1,5 @@
 from crypt import methods
+import email
 import mimetypes
 from operator import methodcaller
 from flask import Flask, Response, request
@@ -44,16 +45,27 @@ def select_users():
     users_object = Usuario.query.all()
     users_json = [user.to_json() for user in users_object]
 
-    return generate_response(200, 'usuarios', users_json, 'ok' )
+    return generate_response(200, 'usuarios', users_json)
 
-@app.route('/usuario/<id>')
+@app.route('/usuario/<id>', methods=['GET'])
 def select_user(id):
     user_object = Usuario.query.filter_by(id = id).first()
     user_json = user_object.to_json()
 
     return generate_response(200, 'usuario', user_json)
 
-#stopped at 17'
+@app.route('/usuario', methods=["POST"])
+def create_user():
+    body = request.get_json()
+    try:
+        usuario = Usuario(nome=body["nome"], email=body["email"])
+        db.session.add(usuario)
+        db.session.commit()
+        return generate_response(201, "usuario", usuario.to_json(), "success")
+    except Exception as e:
+        print('Error', e)
+        return generate_response(400, "usuario", {}, "errorrr")
+
 
 if __name__ == '__main__':
-    app.run(host = '0.0.0.0', port = 3022, debug = True)
+    app.run(host = '0.0.0.0', port = 3032)
