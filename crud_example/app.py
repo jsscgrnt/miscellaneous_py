@@ -27,7 +27,7 @@ class Usuario(db.Model):
     email = db.Column(db.String(100))
 
     def to_json(self):
-        return{"id": self.id, "nome": self.nome, "email": self.email}
+        return {"id": self.id, "nome": self.nome, "email": self.email}
 
 # db.create_all() #creates table at db 
 
@@ -56,7 +56,7 @@ def select_user(id):
 
 @app.route('/usuario', methods=["POST"])
 def create_user():
-    body = request.get_json()
+    body = request.get_json(silent=True)
     try:
         usuario = Usuario(nome=body["nome"], email=body["email"])
         db.session.add(usuario)
@@ -66,6 +66,23 @@ def create_user():
         print('Error', e)
         return generate_response(400, "usuario", {}, "errorrr")
 
+@app.route('/usuario/<id>', methods=["PUT"])
+def atualiza_usuario(id):
+    user_object = Usuario.query.filter_by(id = id).first()
+    body = request.get_json()
+    try:
+        if('nome' in body):
+            user_object.nome = body['nome']
+        if('email' in body):
+            user_object.email = body['email']
+
+        db.session.add(user_object)
+        db.session.commit()
+        return generate_response(201, "usuario", user_object.to_json(), "success")
+    except Exception as e:
+        print('Error', e)
+        return generate_response(400, "usuario", {}, "errorrr")
+
 
 if __name__ == '__main__':
-    app.run(host = '0.0.0.0', port = 3032)
+    app.run(host = '0.0.0.0', port = 3034)
