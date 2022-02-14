@@ -64,10 +64,10 @@ def create_user():
         return generate_response(201, "usuario", usuario.to_json(), "success")
     except Exception as e:
         print('Error', e)
-        return generate_response(400, "usuario", {}, "errorrr")
+        return generate_response(400, "usuario", {}, "error")
 
 @app.route('/usuario/<id>', methods=["PUT"])
-def atualiza_usuario(id):
+def update_user(id):
     user_object = Usuario.query.filter_by(id = id).first()
     body = request.get_json()
     try:
@@ -81,8 +81,18 @@ def atualiza_usuario(id):
         return generate_response(201, "usuario", user_object.to_json(), "success")
     except Exception as e:
         print('Error', e)
-        return generate_response(400, "usuario", {}, "errorrr")
+        return generate_response(400, "usuario", {}, "error")
 
+@app.route('/usuario/<id>', methods = ['DELETE'])
+def delete_user(id):
+    user_object = Usuario.query.filter_by(id = id).first()
+    try:
+        db.session.delete(user_object)
+        db.session.commit()
+        return generate_response(201, "usuario", user_object.to_json(), "success")
+    except Exception as e:
+        print("Error", e)
+        return generate_response(400, "usuario", {}, "error")
 
 if __name__ == '__main__':
     app.run(host = '0.0.0.0', port = 3034)
