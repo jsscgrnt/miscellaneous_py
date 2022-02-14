@@ -15,12 +15,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/youtube'
 
 db = SQLAlchemy(app)
 
-#select all
-#select one
-#insert
-#update
-#delete
-
 class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(50))
@@ -56,7 +50,7 @@ def select_user(id):
 
 @app.route('/usuario', methods=["POST"])
 def create_user():
-    body = request.get_json(silent=True)
+    body = request.get_json(force=True)
     try:
         usuario = Usuario(nome=body["nome"], email=body["email"])
         db.session.add(usuario)
@@ -69,7 +63,7 @@ def create_user():
 @app.route('/usuario/<id>', methods=["PUT"])
 def update_user(id):
     user_object = Usuario.query.filter_by(id = id).first()
-    body = request.get_json()
+    body = request.get_json(force=True)
     try:
         if('nome' in body):
             user_object.nome = body['nome']
@@ -95,4 +89,4 @@ def delete_user(id):
         return generate_response(400, "usuario", {}, "error")
 
 if __name__ == '__main__':
-    app.run(host = '0.0.0.0', port = 3034)
+    app.run(host = '0.0.0.0', port = 3036)
